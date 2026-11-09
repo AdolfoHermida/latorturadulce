@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La tortura dulce</title>
+<style>
+:root{--bg:#0d0507;--bg2:#2a0a14;--ink:#f3e6df;--mute:#a58a86;--rose:#c4274a;--gold:#d9a86c;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(120% 90% at 50% 0%,var(--bg2),var(--bg) 65%);color:var(--ink);font-family:Georgia,"Times New Roman",serif;display:flex;flex-direction:column;overflow:hidden}
+.bar{height:3px;background:#ffffff14;flex:none}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--gold));transition:width .6s}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.card{max-width:560px;width:100%;animation:in .7s ease both}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.lvl{letter-spacing:.35em;text-transform:uppercase;font-size:.75rem;color:var(--gold);margin:0 0 6px}
+.sub{font-style:italic;color:var(--mute);margin:0 0 28px}
+.num{font-size:4.5rem;line-height:1;color:var(--rose);margin:0;opacity:.9}
+h1{font-weight:400;font-size:clamp(2.2rem,8vw,3.4rem);margin:.2em 0;letter-spacing:.04em}
+h2{font-weight:400;font-size:clamp(1.6rem,5.5vw,2.3rem);margin:.3em 0 .5em}
+p{font-size:1.15rem;line-height:1.6;margin:.5em 0}
+.rules{list-style:none;padding:0;margin:24px 0;text-align:left;color:var(--ink)}
+.rules li{padding:10px 0 10px 22px;border-bottom:1px solid #ffffff12;position:relative;line-height:1.5}
+.rules li:before{content:"";position:absolute;left:0;top:19px;width:8px;height:8px;border-radius:50%;background:var(--rose)}
+.turn{display:inline-block;margin-top:14px;padding:6px 16px;border:1px solid var(--gold);color:var(--gold);border-radius:99px;font-size:.85rem;letter-spacing:.15em;text-transform:uppercase}
+.timer{font-size:2.2rem;color:var(--gold);margin:18px 0 0;min-height:2.6rem;font-variant-numeric:tabular-nums}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+button{font:inherit;cursor:pointer;border-radius:99px;padding:14px 30px;border:1px solid var(--rose);background:transparent;color:var(--ink);letter-spacing:.12em;text-transform:uppercase;font-size:.85rem;transition:.25s}
+button.main{background:var(--rose)}
+button:hover{box-shadow:0 0 24px #c4274a77}
+button.ghost{border-color:#ffffff30;color:var(--mute)}
+.back{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.count{position:fixed;right:20px;bottom:calc(22px + env(safe-area-inset-bottom,0px));color:var(--mute);font-size:.85rem;letter-spacing:.1em}
+</style>
+</head>
+<body>
+<div class="bar"><i id="bar"></i></div>
+<main><div class="card" id="card"></div></main>
+<button class="ghost back" id="back" style="display:none">Atrás</button>
+<div class="count" id="count"></div>
+<script>
+var L=["Sin tocar","Contacto suave","Zonas sensibles","Se acaba la paciencia","Rendición"];
+var S=[
+[0,"Mirada","30 segundos a los ojos, sin reíros y sin hablar.",30],
+[0,"Manos a un centímetro","Pasa las manos despacio por todo el cuerpo del otro, por delante y por detrás, a un centímetro de la piel. Sin rozarla.",60],
+[0,"Boca a un centímetro","El mismo recorrido, ahora con la boca. Sin tocar, soplando suave en algunas zonas: vientre, ingle, interior de los muslos, pezones.",90],
+[1,"Ombligo","Un beso en el ombligo.",0],
+[1,"Espalda","Un beso en el centro de la espalda.",0],
+[1,"Yemas de los dedos","Punta de los dedos por brazos, cintura y costados. Sin prisa.",60],
+[1,"Cuello","Besos en el cuello. El que recibe no puede moverse.",60],
+[1,"Clavículas","Besos y lengua en las clavículas, bajando por el esternón hasta el canalillo.",60],
+[2,"Muslos","Besos y caricias por el interior de los muslos, sin llegar arriba.",60],
+[2,"Beso lento","Un minuto de beso en la boca. Sin manos.",60],
+[2,"Un solo pezón","Un beso en el pezón. Solo uno. Y parar.",0],
+[2,"Ombligo a clavículas","Recorre con los labios desde el ombligo hasta las clavículas, muy despacio.",45],
+[2,"Hasta la línea","Besos en la parte baja del vientre y en la ingle, rozando, sin cruzar la línea.",60],
+[3,"Pechos y pezones","Con boca y manos. El que recibe aguanta sin moverse.",60],
+[3,"Por fuera","Roza la entrepierna con la punta de los dedos, solo por fuera, muy despacio.",60],
+[3,"A ciegas","Ojos vendados. El otro elige dónde besar y toca sin avisar.",90],
+[3,"Provocar y parar","Acaricia la entrepierna y para justo cuando suba la tensión. Tres veces.",90],
+[4,"Un solo beso","Un único beso en la entrepierna. Y parar.",0],
+[4,"Alrededor","Besos lentos en la ingle y la parte alta del interior del muslo, sin tocar el centro.",30],
+[4,"Punta de la lengua","Círculos suaves con la punta de la lengua. Después, aparta la boca 10 segundos.",30],
+[4,"Lengua plana","Lengua plana y lenta, sin cambiar de ritmo. El que recibe no se mueve.",60],
+[4,"Ritmo libre","El que da elige cómo. Justo antes del límite, parar del todo.",60],
+[4,"Final","Sexo oral mutuo. Aquí se acaba el juego y ya no hay normas.",0]
+];
+var i=-1,t=null,card=document.getElementById("card");
+function fmt(s){return Math.floor(s/60)+":"+("0"+s%60).slice(-2)}
+function render(){
+ clearInterval(t);
+ document.getElementById("bar").style.width=Math.max(0,i+1)/S.length*100+"%";
+ document.getElementById("back").style.display=i>=0?"block":"none";
+ document.getElementById("count").textContent=i>=0?(i+1)+" / "+S.length:"";
+ var h="";
+ if(i<0){
+  h='<p class="lvl">Solo para dos</p><h1>La tortura dulce</h1><p class="sub">Aguanta. Provoca. No te rindas.</p>'+
+  '<ul class="rules"><li>Empezáis desnudos, sin tocaros. Solo se mira.</li><li>Cada prueba dura uno o dos minutos. La hace uno, luego el otro.</li><li>Quien recibe aguanta: manos quietas, sin devolver nada, sin pedir más.</li><li>Si se rinde, el otro gana un comodín: salta una prueba o elige la siguiente.</li></ul>'+
+  '<div class="btns"><button class="main" onclick="go(1)">Empezar</button></div>';
+ }else{
+  var s=S[i],prev=i>0?S[i-1][0]:-1,last=i===S.length-1;
+  h='<p class="lvl">Nivel '+(s[0]+1)+' · '+L[s[0]]+'</p>'+
+  '<p class="num">'+(i+1)+'</p><h2>'+s[1]+'</h2><p>'+s[2]+'</p>'+
+  (last?'':'<span class="turn">Uno, y luego el otro</span>')+
+  (s[3]?'<div class="timer" id="tm">'+fmt(s[3])+'</div><div class="btns"><button onclick="timer('+s[3]+')">Cronómetro</button>':'<div class="btns">')+
+  (last?'<button class="main" onclick="go(-99)">Volver a empezar</button>':'<button class="main" onclick="go(1)">Siguiente</button>')+'</div>';
+ }
+ card.style.animation="none";card.offsetHeight;card.style.animation="";
+ card.innerHTML=h;
+}
+function go(d){i=d===-99?-1:Math.min(S.length-1,Math.max(-1,i+d));render()}
+function timer(n){
+ clearInterval(t);var el=document.getElementById("tm");el.textContent=fmt(n);
+ t=setInterval(function(){n--;el.textContent=fmt(Math.max(n,0));if(n<=0){clearInterval(t);if(navigator.vibrate)navigator.vibrate(300)}},1000);
+}
+document.getElementById("back").onclick=function(){go(-1)};
+document.addEventListener("keydown",function(e){if(e.key==="ArrowRight"||e.key===" ")go(1);if(e.key==="ArrowLeft")go(-1)});
+render();
+</script>
+</body>
+</html>
